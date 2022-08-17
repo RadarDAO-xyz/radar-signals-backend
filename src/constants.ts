@@ -1,0 +1,1 @@
+export const RADAR_GUILD_ID = "913873017287884830"
