@@ -5,9 +5,11 @@
   "license": "MIT",
   "scripts": {
     "postinstall": "tsc",
-    "dev": "node dist/index.js"
+    "dev": "node dist/index.js --dev --no-auth",
+    "start": "node dist/index.js"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/jsonwebtoken": "^8.5.8",
     "@types/node-fetch": "^2.6.2",

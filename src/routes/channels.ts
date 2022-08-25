@@ -1,10 +1,11 @@
 import { Router } from 'express';
-const channels = require('../../channels.json');
 
-const router = Router();
+export default function channels(channels: { id: string; name: string }[]) {
+    const router = Router();
 
-router.get('/', (req, res) => {
-    res.json(channels);
-});
+    router.get('/', (req, res) => {
+        res.json(channels);
+    });
 
-export default router;
+    return router;
+}
