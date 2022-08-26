@@ -3,17 +3,18 @@ import { RADAR_GUILD_ID } from '../constants';
 import { APIThreadChannel, APIUser, APIWebhook } from 'discord-api-types/v10';
 
 export const isUserARadar = async (access_token: string) => {
-    const guildResponse = await fetch(`https://discord.com/api/v10/guilds/${RADAR_GUILD_ID}`, {
+    const guildResponse = await fetch(`https://discord.com/api/v10/users/@me/guilds`, {
         headers: {
             Accept: 'application/json',
             Authorization: `Bearer ${access_token}`
         }
     });
-    return guildResponse.ok;
+    const guilds = await guildResponse.json();
+    return !!guilds.find((g: { id: string }) => g.id === RADAR_GUILD_ID);
 };
 
 export const getUserInfo = async (access_token: string): Promise<APIUser> => {
-    const response = await fetch(`https://discord.com/ap/v10i/oauth2/@me`, {
+    const response = await fetch(`https://discord.com/api/v10/users/@me`, {
         headers: {
             Accept: 'application/json',
             Authorization: `Bearer ${access_token}`
