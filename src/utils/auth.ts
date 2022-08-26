@@ -31,7 +31,7 @@ export function auth() {
                 discriminator: '9412',
                 avatar: 'b738d5308808dfdb9fb61c0fa9bd0c41',
                 id: '337266897458429956'
-            }
+            };
             next();
         }
     };
