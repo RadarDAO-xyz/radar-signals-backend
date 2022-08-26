@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "postinstall": "tsc",
-    "dev": "node dist/index.js --dev --no-auth",
+    "dev": "node dist/index.js --dev",
     "start": "node dist/index.js"
   },
   "devDependencies": {
