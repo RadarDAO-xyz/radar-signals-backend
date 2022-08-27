@@ -9,8 +9,12 @@ export const isUserARadar = async (access_token: string) => {
             Authorization: `Bearer ${access_token}`
         }
     });
-    const guilds = await guildResponse.json();
-    return !!guilds.find((g: { id: string }) => g.id === RADAR_GUILD_ID);
+    if (guildResponse.ok) {
+        const guilds = await guildResponse.json();
+        return !!guilds.find((g: { id: string }) => g.id === RADAR_GUILD_ID);
+    } else {
+        throw guildResponse.statusText + await guildResponse.text();
+    }
 };
 
 export const getUserInfo = async (access_token: string): Promise<APIUser> => {
@@ -20,7 +24,11 @@ export const getUserInfo = async (access_token: string): Promise<APIUser> => {
             Authorization: `Bearer ${access_token}`
         }
     });
-    return response.json();
+    if (response.ok) {
+        return response.json();
+    } else {
+        throw response.statusText + (await response.text());
+    }
 };
 
 export const getChannelWebhooks = async (channelId: string): Promise<APIWebhook[]> => {
@@ -30,7 +38,11 @@ export const getChannelWebhooks = async (channelId: string): Promise<APIWebhook[
             Authorization: `Bot ${process.env.BOT_TOKEN}`
         }
     });
-    return response.json();
+    if (response.ok) {
+        return response.json();
+    } else {
+        throw response.statusText + (await response.text());
+    }
 };
 
 export const createWebhook = async (channelId: string, name: string): Promise<APIWebhook> => {
@@ -45,7 +57,11 @@ export const createWebhook = async (channelId: string, name: string): Promise<AP
             name
         })
     });
-    return response.json();
+    if (response.ok) {
+        return response.json();
+    } else {
+        throw response.statusText + (await response.text());
+    }
 };
 
 export const getWebhook = async (webhookId: string): Promise<APIWebhook> => {
@@ -55,7 +71,11 @@ export const getWebhook = async (webhookId: string): Promise<APIWebhook> => {
             Authorization: `Bot ${process.env.BOT_TOKEN}`
         }
     });
-    return response.json();
+    if (response.ok) {
+        return response.json();
+    } else {
+        throw response.statusText + (await response.text());
+    }
 };
 
 export const createThread = async (channelId: string, name: string): Promise<APIThreadChannel> => {
@@ -71,7 +91,11 @@ export const createThread = async (channelId: string, name: string): Promise<API
             type: 11
         })
     });
-    return response.json();
+    if (response.ok) {
+        return response.json();
+    } else {
+        throw response.statusText + (await response.text());
+    }
 };
 
 export const executeWebhook = async (
