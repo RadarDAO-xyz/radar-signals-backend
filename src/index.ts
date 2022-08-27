@@ -6,6 +6,10 @@ import { auth } from './utils/auth';
 import { loadEnv } from './utils/loadEnv';
 import { loadFlags } from './utils/loadFlags';
 
+process.on('unhandledRejection', (reason, promise) => {
+    console.error(reason, promise)
+})
+
 try {
     // Shouldn't throw since envs might be defined through console/os
     loadEnv();
