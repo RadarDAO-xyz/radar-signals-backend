@@ -46,7 +46,7 @@ export default function submit(channels: { id: string; name: string }[]) {
         const success = await executeWebhook(
             webhook.id,
             webhook.token,
-            `<@${req.user.id}>\n${tags.map(x => `#${x}`).join(' ')}\n${url}\n\n${comment.trim()}`,
+            `<@${req.user.id}>\n${tags.map(x => `#${x}`).join(' ')}\n${url}\n\nOn our RADAR: ${comment.trim()}`,
             req.user.username,
             `https://cdn.discordapp.com/avatars/${req.user.id}/${req.user.avatar}.webp`,
             thread.id
