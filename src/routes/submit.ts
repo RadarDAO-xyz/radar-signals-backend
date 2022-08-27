@@ -1,11 +1,19 @@
 import { Router } from 'express';
 import { getChannelWebhooks, createWebhook, createThread, executeWebhook } from '../utils/discord';
 
+type SubmitBody = {
+    title: string;
+    tags: string[];
+    url: string;
+    channelId: string;
+    comment: string;
+}
+
 export default function submit(channels: { id: string; name: string }[]) {
     const router = Router();
 
     router.post('/', async (req, res) => {
-        const { title, tags, url, channelId, comment } = req.body;
+        const { title, tags, url, channelId, comment } = req.body as SubmitBody;
         if (!channels.find(channel => channel.id === channelId)) {
             return res.sendStatus(400);
         }
@@ -30,7 +38,7 @@ export default function submit(channels: { id: string; name: string }[]) {
         const success = await executeWebhook(
             webhook.id,
             webhook.token,
-            `${comment.trim()}\n\n${url}`,
+            `<@${req.user.id}>\n${tags.map(x => `#${x}`).join(' ')}\n${url}\n\n${comment.trim()}`,
             req.user.username,
             `https://cdn.discordapp.com/avatars/${req.user.id}/${req.user.avatar}.webp`,
             thread.id
