@@ -13,7 +13,9 @@ export const isUserARadar = async (access_token: string) => {
         const guilds = await guildResponse.json();
         return !!guilds.find((g: { id: string }) => g.id === RADAR_GUILD_ID);
     } else {
-        throw guildResponse.statusText + await guildResponse.text();
+        throw new Error(
+            'DiscordAPIError: Could not fetch user guilds: ' + guildResponse.statusText
+        );
     }
 };
 
@@ -27,7 +29,7 @@ export const getUserInfo = async (access_token: string): Promise<APIUser> => {
     if (response.ok) {
         return response.json();
     } else {
-        throw response.statusText + (await response.text());
+        throw new Error('DiscordAPIError: Could not fetch user info: ' + response.statusText);
     }
 };
 
@@ -41,7 +43,9 @@ export const getChannelWebhooks = async (channelId: string): Promise<APIWebhook[
     if (response.ok) {
         return response.json();
     } else {
-        throw response.statusText + (await response.text());
+        throw new Error(
+            'DiscordAPIError: Could not fetch channel webhooks: ' + response.statusText
+        );
     }
 };
 
@@ -60,7 +64,7 @@ export const createWebhook = async (channelId: string, name: string): Promise<AP
     if (response.ok) {
         return response.json();
     } else {
-        throw response.statusText + (await response.text());
+        throw new Error('DiscordAPIError: Could not create webhook: ' + response.statusText);
     }
 };
 
@@ -74,7 +78,7 @@ export const getWebhook = async (webhookId: string): Promise<APIWebhook> => {
     if (response.ok) {
         return response.json();
     } else {
-        throw response.statusText + (await response.text());
+        throw new Error('DiscordAPIError: Could not get webhook: ' + response.statusText);
     }
 };
 
@@ -94,7 +98,7 @@ export const createThread = async (channelId: string, name: string): Promise<API
     if (response.ok) {
         return response.json();
     } else {
-        throw response.statusText + (await response.text());
+        throw new Error('DiscordAPIError: Could not create thread: ' + response.statusText);
     }
 };
 
