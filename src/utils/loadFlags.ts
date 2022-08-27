@@ -13,6 +13,6 @@ export function loadFlags() {
     const argv = process.argv.slice(2);
     process.flags = {
         noAuth: argv.includes('--no-auth'),
-        dev: argv.includes('--dev')
+        dev: process.env.NODE_ENV === 'dev' ? true : argv.includes('--dev')
     };
 }
