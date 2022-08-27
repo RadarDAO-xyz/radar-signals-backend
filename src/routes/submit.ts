@@ -13,6 +13,8 @@ export default function submit(channels: { id: string; name: string }[]) {
     const router = Router();
 
     router.post('/', async (req, res) => {
+        console.log(`${req.user.username}#${req.user.discriminator} is submitting a signal`)
+
         const { title, tags, url, channelId, comment } = req.body as SubmitBody;
         if (!channels.find(channel => channel.id === channelId)) {
             return res.sendStatus(400);
@@ -48,6 +50,7 @@ export default function submit(channels: { id: string; name: string }[]) {
             return res.sendStatus(500).send('Could not execute webhook');
         }
 
+        console.log(`${req.user.username}#${req.user.discriminator} has submitted a signal [https://discord.com/channels/${thread.guild_id}/${thread.id}]`)
         res.sendStatus(204);
     });
 
