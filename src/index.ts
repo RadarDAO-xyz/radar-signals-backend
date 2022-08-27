@@ -7,8 +7,8 @@ import { loadEnv } from './utils/loadEnv';
 import { loadFlags } from './utils/loadFlags';
 
 process.on('unhandledRejection', (reason, promise) => {
-    console.error(reason, promise)
-})
+    console.error(reason, promise);
+});
 
 try {
     // Shouldn't throw since envs might be defined through console/os
@@ -24,10 +24,10 @@ console.log(channels.length, 'channels loaded');
 
 const app = express();
 
-app.use(express.json());
+app.use(cors()); // Cors headers before waiting for json
+app.use(auth()); // Check auth before waiting for json
 
-app.use(cors());
-app.use(auth());
+app.use(express.json());
 
 app.use('/channels', channelsRoute(channels));
 app.use('/submit', submit(channels));
