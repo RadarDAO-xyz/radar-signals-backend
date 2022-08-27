@@ -1,0 +1,2 @@
+-   Make event handler autocode proj ignore thread creation if owner is this
+    -   Make this one create a new entry in that airtable itself instead (for tags to store)

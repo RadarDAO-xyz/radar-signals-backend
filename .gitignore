@@ -1,2 +1,8 @@
-.env
+# Modules
 node_modules
+
+# Secrets
+.env
+
+# Compiled files
+dist

@@ -1,19 +1,14 @@
 # Radar Signals Backend
 
-### Quick Start
+## Quick Start
 
-#### Install dependencies
-* `yarn` or `yarn install`
-* Make sure `data/channels.json` is populated properly with your channel names, categories, ids and webhooks.
+### Install dependencies
+* `npm install`
+* Make sure `channels.json` is populated in this format `{ id: 'channel_id', name: 'channel_name' }`
 
 > RADAR DAO members: ask in [#product-squad](https://discord.com/channels/913873017287884830/961996856198590544) for an example file with test channels
 
-#### Development
-> TODO
-
-* `yarn dev`
-
-#### Production
+### Development
 > TODO
 
 * `yarn dev`
