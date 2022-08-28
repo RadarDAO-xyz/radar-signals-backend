@@ -32,7 +32,7 @@ export default function submit(channels: { id: string; name: string }[]) {
         }
 
         if (!webhook) {
-            console.error('No webhook found, could not create new one')
+            console.error('No webhook found, could not create new one');
             return res.sendStatus(500).send('No webhook found, could not create new one');
         }
 
@@ -46,14 +46,16 @@ export default function submit(channels: { id: string; name: string }[]) {
         const success = await executeWebhook(
             webhook.id,
             webhook.token,
-            `<@${req.user.id}>\n${tags.map(x => `#${x}`).join(' ')}\n${url}\n\nOn our RADAR: ${comment.trim()}`,
+            `<@${req.user.id}>\n${tags.map(x => `#${x}`).join(' ')}\n${url}\n\n${
+                comment.trim().length > 0 ? `On our RADAR: ${comment.trim()}` : ''
+            }`.trim(),
             req.user.username,
             `https://cdn.discordapp.com/avatars/${req.user.id}/${req.user.avatar}.webp`,
             thread.id
         ).catch(console.error);
 
         if (!success) {
-            console.error("Could not execute webhook")
+            console.error('Could not execute webhook');
             return res.sendStatus(500).send('Could not execute webhook');
         }
 
