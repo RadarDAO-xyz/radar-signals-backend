@@ -1,6 +1,8 @@
 import type { APIUser } from 'discord-api-types/v10';
 import type { NextFunction, Request, Response } from 'express';
-import { isUserARadar, getUserInfo } from '../utils/discord';
+import { isUserARadar as isInServer, getUserInfo } from '../utils/discord';
+import Airtable from 'airtable';
+import { AirtableTagColumn } from '../constants';
 
 declare global {
     namespace Express {
@@ -9,6 +11,11 @@ declare global {
         }
     }
 }
+
+const base = new Airtable({ apiKey: process.env.AIRTABLE_TOKEN }).base(
+    process.env.AIRTABLE_MEMBER_BASE_ID || ''
+);
+const table = base('Table 1');
 
 export function auth() {
     if (process.flags.noAuth)
@@ -19,11 +26,18 @@ export function auth() {
             const auth = req.headers.authorization;
             if (!auth) return res.sendStatus(401);
             const token = auth.split(' ')[1];
-            if (await isUserARadar(token)) {
+            if (await isInServer(token)) {
                 req.user = await getUserInfo(token);
-                next();
+                const result = await table
+                    .select({
+                        filterByFormula: `AND({${AirtableTagColumn}} = "${req.user.username}#${req.user.discriminator}", {Approved} = TRUE())`
+                    })
+                    .firstPage();
+
+                if (result.length === 0) res.sendStatus(403).send('You have not been approved');
+                else next();
             } else {
-                res.sendStatus(403);
+                res.sendStatus(403).send('You are not in the Discord server');
             }
         } else {
             req.user = {
