@@ -5,7 +5,7 @@ import { integration } from './discord/integration';
 export function discord(publicKey: string) {
     const router = Router();
 
-    router.use(text());
+    router.use(text({ type: '*/*' }));
 
     router.use(verifyDiscordSignature(publicKey));
 
