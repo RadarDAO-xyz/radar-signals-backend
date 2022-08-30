@@ -11,16 +11,16 @@ type SubmitBody = {
     comment: string;
 };
 
-const base = new Airtable({ apiKey: process.env.AIRTABLE_TOKEN }).base(
-    process.env.AIRTABLE_THREAD_BASE_ID || ''
-);
-
-function getTable() {
-    return process.flags.dev ? base('Table 2') : base('Table 1');
-}
-
 export default function submit(channels: { id: string; name: string }[]) {
     const router = Router();
+
+    const base = new Airtable({ apiKey: process.env.AIRTABLE_TOKEN }).base(
+        process.env.AIRTABLE_THREAD_BASE_ID || ''
+    );
+
+    function getTable() {
+        return process.flags.dev ? base('Table 2') : base('Table 1');
+    }
 
     router.post('/', async (req, res) => {
         console.log(`${req.user.username}#${req.user.discriminator} is submitting a signal`);

@@ -12,14 +12,14 @@ declare global {
     }
 }
 
-const base = new Airtable({ apiKey: process.env.AIRTABLE_TOKEN }).base(
-    process.env.AIRTABLE_MEMBER_BASE_ID || ''
-);
-const table = base('Table 1');
-
 export function auth() {
     if (process.flags.noAuth)
         console.warn('APP IS IN NO AUTH MODE, THIS IS FOR TESTING PURPOSES ONLY AS IT IS INSECURE');
+
+    const base = new Airtable({ apiKey: process.env.AIRTABLE_TOKEN }).base(
+        process.env.AIRTABLE_MEMBER_BASE_ID || ''
+    );
+    const table = base('Table 1');
 
     return async function auth(req: Request, res: Response, next: NextFunction) {
         if (!process.flags.noAuth) {
@@ -28,16 +28,19 @@ export function auth() {
             const token = auth.split(' ')[1];
             if (await isInServer(token)) {
                 req.user = await getUserInfo(token);
+                const tag = req.user.username + '#' + req.user.discriminator;
                 const result = await table
                     .select({
-                        filterByFormula: `AND({${AirtableTagColumn}} = "${req.user.username}#${req.user.discriminator}", {Approved} = TRUE())`
+                        filterByFormula: `AND({${AirtableTagColumn}} = "${tag}", {Approved} = TRUE())`
                     })
                     .firstPage();
 
-                if (result.length === 0) res.sendStatus(403).send('You have not been approved');
-                else next();
+                if (result.length === 0) {
+                    console.log(`${tag} has not been approved`);
+                    res.status(403).send('You have not been approved');
+                } else next();
             } else {
-                res.sendStatus(403).send('You are not in the Discord server');
+                res.status(403).send('You are not in the Discord server');
             }
         } else {
             req.user = {
