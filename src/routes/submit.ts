@@ -1,6 +1,7 @@
 import { APIWebhook } from 'discord-api-types/v10';
 import { Router } from 'express';
 import { getChannelWebhooks, createWebhook, createThread, executeWebhook } from '../utils/discord';
+import Airtable from 'airtable';
 
 type SubmitBody = {
     title: string;
@@ -13,11 +14,20 @@ type SubmitBody = {
 export default function submit(channels: { id: string; name: string }[]) {
     const router = Router();
 
+    const base = new Airtable({ apiKey: process.env.AIRTABLE_TOKEN }).base(
+        process.env.AIRTABLE_THREAD_BASE_ID || ''
+    );
+
+    function getTable() {
+        return process.flags.dev ? base('Table 2') : base('Table 1');
+    }
+
     router.post('/', async (req, res) => {
         console.log(`${req.user.username}#${req.user.discriminator} is submitting a signal`);
 
         const { title, tags, url, channelId, comment } = req.body as SubmitBody;
-        if (!channels.find(channel => channel.id === channelId)) {
+        const channel = channels.find(channel => channel.id === channelId);
+        if (!channel) {
             return res.sendStatus(400);
         }
 
@@ -57,6 +67,29 @@ export default function submit(channels: { id: string; name: string }[]) {
         if (!success) {
             console.error('Could not execute webhook');
             return res.sendStatus(500).send('Could not execute webhook');
+        }
+
+        const created = await getTable()
+            .create(
+                {
+                    'Thread Name': thread.name,
+                    Link: `https://discord.com/channels/${thread.guild_id}/${thread.id}`,
+                    'Signal Channel': channel.name,
+                    Tags: tags,
+                    Curator: `${req.user.username}#${req.user.discriminator}`,
+                    Status: 'ACTIVE',
+                    Comments: thread.message_count,
+                    Timestamp: Date.now()
+                },
+                {
+                    typecast: true
+                }
+            )
+            .catch(e => console.error(e));
+
+        if (!created) {
+            console.error('Could not create airtable entry');
+            return res.sendStatus(500).send('Could not create airtable entry');
         }
 
         console.log(
