@@ -13,7 +13,7 @@ export default async function tag(
     res: Response,
     i: APIChatInputApplicationCommandInteraction
 ) {
-    res.json({ type: 5 }); // Defer
+    res.json({ type: 5, data: { flags: 1 << 6 } }); // Defer ephemeral
     const base = new Airtable({ apiKey: process.env.AIRTABLE_TOKEN }).base(
         process.env.AIRTABLE_THREAD_BASE_ID || ''
     );
@@ -32,7 +32,7 @@ export default async function tag(
             x => x.name === 'name'
         ) as APIApplicationCommandInteractionDataStringOption
     ).value;
-    console.log(threadId, tag);
+    console.log(`Attempting to add a new tag (${tag}) to a thread (${threadId})`);
     const url = resolveChannelURL(i.guild_id as string, threadId);
 
     const results = await getTable()

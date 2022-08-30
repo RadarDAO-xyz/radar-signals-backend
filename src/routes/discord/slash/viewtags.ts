@@ -12,7 +12,7 @@ export default async function viewtags(
     res: Response,
     i: APIChatInputApplicationCommandInteraction
 ) {
-    res.json({ type: 5 }); // Defer
+    res.json({ type: 5, data: { flags: 1 << 6 } }); // Defer ephemeral
     const base = new Airtable({ apiKey: process.env.AIRTABLE_TOKEN }).base(
         process.env.AIRTABLE_THREAD_BASE_ID || ''
     );
@@ -26,7 +26,7 @@ export default async function viewtags(
             x => x.name === 'signal'
         ) as APIApplicationCommandInteractionDataChannelOption
     ).value;
-    console.log(threadId);
+    console.log(`Viewing tags for a thread ${threadId}`);
     const url = resolveChannelURL(i.guild_id as string, threadId);
 
     const results = await getTable()
