@@ -1,6 +1,6 @@
 import { APIWebhook } from 'discord-api-types/v10';
 import { Router } from 'express';
-import { getChannelWebhooks, createWebhook, createThread, executeWebhook } from '../utils/discord';
+import { getChannelWebhooks, createWebhook, createThread, executeWebhook, resolveChannelURL } from '../utils/discord';
 import Airtable from 'airtable';
 
 type SubmitBody = {
@@ -73,7 +73,7 @@ export default function submit(channels: { id: string; name: string }[]) {
             .create(
                 {
                     'Thread Name': thread.name,
-                    Link: `https://discord.com/channels/${thread.guild_id}/${thread.id}`,
+                    Link: resolveChannelURL(thread.guild_id as string, thread.id),
                     'Signal Channel': channel.name,
                     Tags: tags,
                     Curator: `${req.user.username}#${req.user.discriminator}`,
@@ -93,7 +93,7 @@ export default function submit(channels: { id: string; name: string }[]) {
         }
 
         console.log(
-            `${req.user.username}#${req.user.discriminator} has submitted a signal [https://discord.com/channels/${thread.guild_id}/${thread.id}]`
+            `${req.user.username}#${req.user.discriminator} has submitted a signal [${resolveChannelURL(thread.guild_id as string, thread.id)}]`
         );
         res.sendStatus(204);
     });

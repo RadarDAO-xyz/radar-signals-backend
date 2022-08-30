@@ -1,8 +1,22 @@
 import fetch from 'node-fetch';
 import { RADAR_GUILD_ID } from '../constants';
-import { APIThreadChannel, APIUser, APIWebhook } from 'discord-api-types/v10';
+import {
+    APIThreadChannel,
+    APIUser,
+    APIWebhook,
+    RESTPostAPIChannelWebhookJSONBody,
+    RESTPostAPIWebhookWithTokenJSONBody,
+    Routes
+} from 'discord-api-types/v10';
 import nacl from 'tweetnacl';
 import { NextFunction, Request, Response } from 'express';
+import { REST } from '@discordjs/rest';
+
+const rest = new REST();
+
+export const setToken = (token: string) => {
+    return rest.setToken(token);
+};
 
 export const isUserARadar = async (access_token: string) => {
     const guildResponse = await fetch(`https://discord.com/api/v10/users/@me/guilds`, {
@@ -19,6 +33,14 @@ export const isUserARadar = async (access_token: string) => {
             'DiscordAPIError: Could not fetch user guilds: ' + guildResponse.statusText
         );
     }
+};
+
+// We use ptb because the airtable already resolves with ptb
+export const resolveChannelURL = (guildId: string, channelId: string) =>
+    `https://ptb.discord.com/channels/${guildId}/${channelId}`;
+
+export const followUp = (token: string, body: RESTPostAPIWebhookWithTokenJSONBody) => {
+    return rest.post(Routes.webhook(process.env.CLIENT_ID as string, token), { body });
 };
 
 export const verifyDiscordSignature = (publicKey: string) => {
