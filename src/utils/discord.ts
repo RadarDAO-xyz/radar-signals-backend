@@ -1,6 +1,8 @@
 import fetch from 'node-fetch';
 import { RADAR_GUILD_ID } from '../constants';
 import { APIThreadChannel, APIUser, APIWebhook } from 'discord-api-types/v10';
+import nacl from 'tweetnacl';
+import { NextFunction, Request, Response } from 'express';
 
 export const isUserARadar = async (access_token: string) => {
     const guildResponse = await fetch(`https://discord.com/api/v10/users/@me/guilds`, {
@@ -17,6 +19,33 @@ export const isUserARadar = async (access_token: string) => {
             'DiscordAPIError: Could not fetch user guilds: ' + guildResponse.statusText
         );
     }
+};
+
+export const verifyDiscordSignature = (publicKey: string) => {
+    return function (req: Request, res: Response, next: NextFunction) {
+        const PUBLIC_KEY = publicKey;
+
+        const signature = req.headers['x-signature-ed25519'] as string;
+        const timestamp = req.headers['x-signature-timestamp'] as string;
+
+        if (!signature || !timestamp || !req.body) {
+            return res.sendStatus(401);
+        }
+
+        const body = req.body;
+
+        const isVerified = nacl.sign.detached.verify(
+            Buffer.from(timestamp + body),
+            Buffer.from(signature, 'hex'),
+            Buffer.from(PUBLIC_KEY, 'hex')
+        );
+
+        if (!isVerified) {
+            return res.status(401).send('invalid request signature');
+        } else {
+            next();
+        }
+    };
 };
 
 export const getUserInfo = async (access_token: string): Promise<APIUser> => {
