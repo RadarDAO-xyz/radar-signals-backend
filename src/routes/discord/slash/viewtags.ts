@@ -21,11 +21,7 @@ export default async function viewtags(
         return process.flags.dev ? base('Table 2') : base('Table 1');
     }
 
-    const threadId = (
-        i.data.options?.find(
-            x => x.name === 'signal'
-        ) as APIApplicationCommandInteractionDataChannelOption
-    ).value;
+    const threadId = i.channel_id;
     console.log(`Viewing tags for a thread ${threadId}`);
     const url = resolveChannelURL(i.guild_id as string, threadId);
 

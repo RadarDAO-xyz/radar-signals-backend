@@ -31,13 +31,13 @@ const commands = [
         .setName('viewtags')
         .setDescription('View the currently existing tags for a signal')
         .setDMPermission(false)
-        .addChannelOption(
-            new SlashCommandChannelOption()
-                .setName('signal')
-                .setDescription('The thread channel view tags of')
-                .addChannelTypes(ChannelType.GuildPublicThread)
-                .setRequired(true)
-        )
+        // .addChannelOption(
+        //     new SlashCommandChannelOption()
+        //         .setName('signal')
+        //         .setDescription('The thread channel view tags of')
+        //         .addChannelTypes(ChannelType.GuildPublicThread)
+        //         .setRequired(true)
+        // )
 ];
 
 rest.put(Routes.applicationCommands(process.env.CLIENT_ID), {
