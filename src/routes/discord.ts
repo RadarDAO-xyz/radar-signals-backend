@@ -7,7 +7,7 @@ export function discord(publicKey: string) {
 
     router.use(text());
 
-    // router.use(verifyDiscordSignature(publicKey));
+    router.use(verifyDiscordSignature(publicKey));
 
     router.use((req, res, next) => {
         try {
