@@ -14,17 +14,17 @@ const commands = [
         .setName('tag')
         .setDescription('Add a tag to a signal')
         .setDMPermission(false)
-        .addChannelOption(
-            new SlashCommandChannelOption()
-                .setName('signal')
-                .setDescription('The thread channel to add a tag to')
-                .addChannelTypes(ChannelType.GuildPublicThread)
-                .setRequired(true)
-        )
+        // .addChannelOption(
+        //     new SlashCommandChannelOption()
+        //         .setName('signal')
+        //         .setDescription('The thread channel to add a tag to')
+        //         .addChannelTypes(ChannelType.GuildPublicThread)
+        //         .setRequired(true)
+        // )
         .addStringOption(
             new SlashCommandStringOption()
                 .setName('name')
-                .setDescription('The name of the tag to add')
+                .setDescription('The name of the tag(s) to add, you can add multiple tags by separating them with spaces or commas')
                 .setRequired(true)
         ),
     new SlashCommandBuilder()

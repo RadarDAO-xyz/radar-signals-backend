@@ -22,16 +22,13 @@ export default async function tag(
         return process.flags.dev ? base('Table 2') : base('Table 1');
     }
 
-    const threadId = (
-        i.data.options?.find(
-            x => x.name === 'signal'
-        ) as APIApplicationCommandInteractionDataChannelOption
-    ).value;
+    const threadId = i.channel_id;
     const tag = (
         i.data.options?.find(
             x => x.name === 'name'
         ) as APIApplicationCommandInteractionDataStringOption
-    ).value;
+    ).value.split(/[, ]/);
+
     console.log(`Attempting to add a new tag (${tag}) to a thread (${threadId})`);
     const url = resolveChannelURL(i.guild_id as string, threadId);
 
@@ -47,7 +44,7 @@ export default async function tag(
         });
     }
 
-    const newtags = [...(results[0].fields.Tags as string[]), tag];
+    const newtags = [...(results[0].fields.Tags as string[]), ...tag];
 
     const success = await results[0]
         .updateFields(
