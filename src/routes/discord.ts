@@ -1,6 +1,6 @@
 import { Router, text } from 'express';
 import { verifyDiscordSignature } from '../utils/discord';
-import { integration } from './discord/integration';
+import { interaction } from './discord/interaction';
 
 export function discord(publicKey: string) {
     const router = Router();
@@ -18,7 +18,7 @@ export function discord(publicKey: string) {
         }
     });
 
-    router.use('/integration', integration());
+    router.use('/interaction', interaction());
 
     return router;
 }
