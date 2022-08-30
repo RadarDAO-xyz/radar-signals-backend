@@ -27,7 +27,9 @@ export default async function tag(
         i.data.options?.find(
             x => x.name === 'name'
         ) as APIApplicationCommandInteractionDataStringOption
-    ).value.split(/[, ]/);
+    ).value
+        .split(/[, ]/)
+        .filter(x => x);
 
     console.log(`Attempting to add a new tag (${tag}) to a thread (${threadId})`);
     const url = resolveChannelURL(i.guild_id as string, threadId);
@@ -66,7 +68,10 @@ export default async function tag(
         embeds: [
             new EmbedBuilder()
                 .setTitle('Tags updated!')
-                .addFields({ name: 'Tags', value: newtags.map(x => `\`#${x}\``).join('\n') })
+                .addFields({
+                    name: 'Tags',
+                    value: (success.fields.Tags as string[]).map(x => `\`#${x}\``).join('\n')
+                })
                 .setColor(0x00ff00)
                 .toJSON()
         ]
